@@ -6,6 +6,8 @@ package org.geoserver.wfstemplating.request;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.geoserver.api.features.FeaturesResponse;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
@@ -24,6 +26,7 @@ import org.geoserver.wfstemplating.configuration.TemplateConfiguration;
 import org.geoserver.wfstemplating.configuration.TemplateIdentifier;
 import org.geoserver.wfstemplating.expressions.JsonLdCQLManager;
 import org.geoserver.wfstemplating.response.GeoJsonTemplateGetFeatureResponse;
+import org.geotools.filter.function.EnvFunction;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.opengis.filter.Filter;
@@ -57,6 +60,18 @@ public class JsonTemplateCallBackOGC extends AbstractDispatcherCallback {
                 if (filterLang != null && filterLang.equalsIgnoreCase("CQL-TEXT")) {
                     String filter = (String) request.getKvp().get("FILTER");
                     replaceJsonLdPathWithFilter(filter, outputFormat, operation);
+                }
+                String envParam =
+                        request.getRawKvp().get("ENV") != null
+                                ? request.getRawKvp().get("ENV").toString()
+                                : null;
+
+                if (envParam != null) {
+                    String[] arEnvParams = envParam.split(";");
+                    for (String e : arEnvParams) {
+                        String[] singleParam = e.split(":");
+                        EnvFunction.setLocalValue(singleParam[0], singleParam[1]);
+                    }
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -116,6 +131,12 @@ public class JsonTemplateCallBackOGC extends AbstractDispatcherCallback {
         /* Todo find a better way to replace json-ld path with corresponding template attribute*/
         // Get filter from string in order to make it accept the visitor
         Filter f = (Filter) XCQL.toFilter(strFilter).accept(visitor, root);
+        List<Filter> templateFilters = new ArrayList<>();
+        templateFilters.addAll(visitor.getFilters());
+        if (templateFilters != null && templateFilters.size() > 0) {
+            templateFilters.add(f);
+            f = JsonTemplateCallback.ff.and(templateFilters);
+        }
         // Taking back a string from Function cause
         // OGC API get a string cql filter from query string
         String newFilter = JsonLdCQLManager.removeQuotes(ECQL.toCQL(f)).replaceAll("/", ".");

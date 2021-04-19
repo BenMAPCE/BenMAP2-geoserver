@@ -107,9 +107,8 @@ Environment function
 
 This function returns the value of environment variables
 defined in various contexts.
-Contexts which define environment variables include
-:ref:`SLD rendering <sld_variable_substitution>`
-and the :ref:`tutorials_animreflector`.
+WMS GetMap automatically defines somes variables :ref:`SLD rendering <sld_variable_substitution>`,
+while others can be provided using the ``env`` request parameter.
 
 .. list-table::
    :widths: 20 25 55
@@ -506,7 +505,7 @@ Non-string values will be converted into a string representation automatically.
      - Returns the upper case version of the string
    * - strTrim
      - ``string``:String
-     - Returns a copy of the string, with leading and trailing white space omitted
+     - Returns a copy of the string, with leading and trailing blank-space omitted
    
    
    

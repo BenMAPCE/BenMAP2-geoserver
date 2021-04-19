@@ -12,11 +12,11 @@ import static org.geoserver.opensearch.rest.ProductsController.ProductPart.Metad
 import static org.geoserver.opensearch.rest.ProductsController.ProductPart.OwsLinks;
 import static org.geoserver.opensearch.rest.ProductsController.ProductPart.Product;
 import static org.geoserver.opensearch.rest.ProductsController.ProductPart.Thumbnail;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.Sets;
@@ -354,6 +354,28 @@ public class ProductsControllerTest extends OSEORestTestSupport {
                         200);
         assertEquals(Integer.valueOf(66), json.read("$.properties['eop:orbitNumber']"));
         assertEquals("2017-01-01T00:00:00.000+0000", json.read("$.properties['timeStart']"));
+    }
+
+    @Test
+    public void testUpdateDisabledProduct() throws Exception {
+        // grab the JSON to modify some bits
+        JSONObject feature =
+                (JSONObject) getAsJSON("rest/oseo/collections/LANDSAT8/products/LS8_TEST.DISABLED");
+        JSONObject properties = feature.getJSONObject("properties");
+        properties.element("enabled", true);
+
+        // send it back
+        MockHttpServletResponse response =
+                putAsServletResponse(
+                        "rest/oseo/collections/LANDSAT8/products/LS8_TEST.DISABLED",
+                        feature.toString(),
+                        "application/json");
+        assertEquals(200, response.getStatus());
+
+        // check the changes
+        DocumentContext json =
+                getAsJSONPath("rest/oseo/collections/LANDSAT8/products/LS8_TEST.DISABLED", 200);
+        assertEquals(Boolean.TRUE, json.read("$.properties['enabled']"));
     }
 
     @Test

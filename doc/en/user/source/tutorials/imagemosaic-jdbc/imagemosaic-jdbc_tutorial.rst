@@ -12,7 +12,7 @@ Introduction
 
 This tutorial describes the process of storing a coverage along with its pyramids in a jdbc database. The ImageMosaic JDBC plugin is authored by Christian Mueller and is part of the geotools library.
 
-The full documentation is available here:`<http://docs.geotools.org/latest/userguide/library/coverage/jdbc/index.html>`_
+The full documentation is available in `GeoTools Image Mosaic JDBC <library/coverage/jdbc/index.html>`.
 
 This tutorial will show one possible scenario, explaining step by step what to do for using this module in GeoServer (since Version 1.7.2)
 
@@ -180,7 +180,7 @@ For this tutorial, we do not use data sources provided by a J2EE container.
  
 The first element ``<spatialExtension>`` specifies which spatial extension the module should use. "universal" means that there is no spatial db extension at all, meaning the tile grid is not stored as a geometry, using simple double values instead.
 
-This xml fragment describes 3 tables, first we need a master table where information for each pyramid level is saved. Second and third, the attribute mappings for storing image data, envelopes and tile names are specified. To keep this tutorial simple, we will not further discuss these xml elements. After creating the sql tables things will become clear.
+This xml fragment describes 3 tables, first we need a primary table where information for each pyramid level is saved. Second and third, the attribute mappings for storing image data, envelopes and tile names are specified. To keep this tutorial simple, we will not further discuss these xml elements. After creating the sql tables things will become clear.
 
 3) Create the configuration xml :file:`osm.postgis.xml` for the map (osm for "open street map") 
 
@@ -208,7 +208,7 @@ Using the java ddl generation utility
 -------------------------------------
 
 
-The full documentation is here: `<http://docs.geotools.org/latest/userguide/library/coverage/jdbc/ddl.html>`_
+The full documentation is in :geotools:`GeoTools User Manual: Using the java ddl generation utility <library/coverage/jdbc/ddl.html>`.
 
 To create the proper sql tables, we can use the java ddl generation utility. This utility is included in the :file:`gt-imagemosaic-jdbc-{version}.jar`. Assure that this jar file is in your :file:`WEB-INF/lib` directory of your GeoServer installation.
 
@@ -273,7 +273,7 @@ Importing the image data
 ------------------------
 
 
-The full documentation is here: `<http://docs.geotools.org/latest/userguide/library/coverage/jdbc/ddl.html>`_
+The full documentation is in :geotools:`GeoTools User Manual: Using the java ddl generation utility <library/coverage/jdbc/ddl.html>`.
 
 First, the jdbc jar file has to be in the :file:`lib/ext` directory of your java runtime. In my case I had to copy :file:`postgresql-8.1-407.jdbc3.jar`.
 
